@@ -1,20 +1,20 @@
-# Coverage Guide Demo
+# Kinro Public Demo
 
-Coverage Guide Demo is an original clean-room TypeScript CLI that demonstrates a public product concept: helping small service businesses compare synthetic insurance packages, understand general coverage topics, and choose a mocked follow-up preference.
+Kinro Public Demo is an original clean-room TypeScript CLI demonstrating a non-regulated AI sales-agent operations workflow for insurance distribution. It models onboarding, synthetic lead workspaces, channel campaign planning, script and objection handling, compliance gating, role-aware task management, and mocked CRM/email/chat receipts.
 
-This repository is intentionally generic. It does not use proprietary source, private data, carrier integrations, trademarks, logos, brand assets, copied marketing language, or regulated decisioning.
+The implementation is based only on public descriptions of a company building AI sales agents for insurance distribution. It does not copy proprietary source, private data, product UI, logos, trademarks, branding, carrier assets, marketing copy, or real workflows.
 
 ## Clean-Room Scope
 
-- Public concept used: small-business insurance quote comparison and basic insurance guidance.
-- Data source: synthetic seed data in `data/` only.
-- Integrations: mocked only; no real carrier, broker, AI, payment, email, SMS, CRM, or insurance-system calls.
-- Outputs: deterministic examples for software demonstration.
-- Not included: binding coverage, policy issuance, underwriting, claims handling, legal advice, financial advice, or insurance recommendations.
+- Public concept used: AI sales agents for insurance distribution across conversational and digital channels.
+- Local demo features: onboarding, synthetic leads, channel planner, objection scripts, compliance checklist, role-aware tasks, mocked integrations.
+- Data source: synthetic files under `data/` only.
+- Integrations: mocked receipts only; no CRM, email, chat, carrier, broker, AI, quote, payment, credential, document, or third-party service calls.
+- Review model: licensed-professional and compliance-review roles are represented as local workflow gates only.
 
-## Disclaimers
+## Important Limitations
 
-This project is not affiliated with, endorsed by, or connected to any real insurance agency, carrier, broker, or public product referenced by the repository name or public descriptions. It is not an insurance product and does not provide insurance, legal, financial, underwriting, or claims advice. Synthetic quote amounts and coverage details are illustrative only and must not be used for real insurance decisions.
+This is not an insurance product and does not provide insurance advice, quoting, underwriting, binding, brokerage, eligibility decisions, real outreach, lead scraping, credential collection, regulated selling, legal advice, financial advice, or claims advice. All leads, organizations, channels, objections, and receipts are synthetic. Any real insurance communication, product explanation, recommendation-like language, quote request, application, bind request, or sales workflow requires review by appropriately licensed professionals and the responsible compliance team.
 
 ## Requirements
 
@@ -29,35 +29,53 @@ npm install
 
 ## Usage
 
-Run the default demonstration:
+Run the full deterministic demo:
 
 ```bash
 npm run demo
 ```
 
-List synthetic business profiles:
+List synthetic leads:
 
 ```bash
 npm run build
-node dist/src/cli.js profiles
+node dist/src/cli.js leads
 ```
 
-Compare synthetic packages for a profile:
+Build a role-aware lead workspace:
 
 ```bash
-node dist/src/cli.js quote riverbend-cleaning --contact email
+node dist/src/cli.js workspace lead-1001
 ```
 
-Ask a general educational question:
+Plan a mocked channel campaign:
 
 ```bash
-node dist/src/cli.js ask "what should I know before filing a claim"
+node dist/src/cli.js campaign web-chat
 ```
 
-Return machine-readable output:
+Generate a safe objection-handling snippet:
 
 ```bash
-node dist/src/cli.js quote copperline-plumbing --json
+node dist/src/cli.js script "I already have insurance" --role sales-ops
+```
+
+Check whether an action is blocked by the compliance gate:
+
+```bash
+node dist/src/cli.js compliance "quote and bind this policy" --role sales-ops
+```
+
+Create a mocked CRM/email/chat receipt:
+
+```bash
+node dist/src/cli.js mock lead-1002 --integration email
+```
+
+Return JSON for automation demos:
+
+```bash
+node dist/src/cli.js workspace lead-1001 --json
 ```
 
 ## Validation
@@ -66,12 +84,12 @@ node dist/src/cli.js quote copperline-plumbing --json
 npm run validate
 ```
 
-The validation script type-checks the TypeScript project, runs Node tests, verifies required clean-room disclaimer text, and executes the demo.
+Validation performs TypeScript type checking, compiles the project, runs Node tests, checks required clean-room/non-regulated disclaimer language, and executes the deterministic demo.
 
 ## Synthetic Data
 
-- `data/business-profiles.json` contains fictional service businesses.
-- `data/market-packages.json` contains fictional package options and premiums.
-- `data/guidance-topics.json` contains educational, non-advisory topic responses.
+- `data/distributor.json` defines a fictional distributor onboarding profile, roles, channels, jurisdictions, and blocked actions.
+- `data/leads.json` contains fictional lead records and role assignments.
+- `data/objections.json` contains fictional objection signals and safe response snippets.
 
-All names, premiums, limits, risk notes, and package details are invented for this demo.
+All records are invented for this repository and must not be used for real sales, insurance, or compliance decisions.

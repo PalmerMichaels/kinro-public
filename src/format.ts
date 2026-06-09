@@ -1,72 +1,88 @@
-import type { BusinessProfile, GuidanceAnswer, HandoffReceipt, QuoteRecommendation } from "./types.js";
-import { OUTPUT_DISCLAIMER, deriveNeeds } from "./quoteEngine.js";
+import type { CampaignPlan, ComplianceCheck, LeadWorkspace, MockReceipt, OnboardingSummary, ScriptResponse } from "./types.js";
 
-const moneyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0
-});
-
-export function formatProfiles(profiles: BusinessProfile[]): string {
-  const lines = [OUTPUT_DISCLAIMER, "", "Synthetic business profiles:"];
-  for (const profile of profiles) {
-    lines.push(
-      `- ${profile.id}: ${profile.displayName} (${profile.trade}, ${profile.employees} employees, ${profile.state})`
-    );
-  }
-  return lines.join("\n");
-}
-
-export function formatQuote(profile: BusinessProfile, recommendations: QuoteRecommendation[], handoff?: HandoffReceipt): string {
-  const lines = [
-    OUTPUT_DISCLAIMER,
-    "",
-    `Synthetic quote comparison for ${profile.displayName}`,
-    `Trade: ${profile.trade} | State: ${profile.state} | Revenue: ${moneyFormatter.format(profile.annualRevenue)} | Employees: ${profile.employees}`,
-    "",
-    "Derived review needs:"
-  ];
-
-  for (const need of deriveNeeds(profile)) {
-    lines.push(`- ${need.label}: ${need.reason}`);
-  }
-
-  lines.push("", "Ranked synthetic packages:");
-  for (const recommendation of recommendations.slice(0, 3)) {
-    const missing = recommendation.missingNeeds.map((need) => need.label).join(", ") || "none flagged";
-    lines.push(
-      `${recommendation.rank}. ${recommendation.packageName} (${recommendation.score}/100) - ${moneyFormatter.format(
-        recommendation.monthlyPremium
-      )}/mo`,
-      `   Fit: ${recommendation.fitSummary}`,
-      `   Missing review areas: ${missing}`,
-      `   Notes: ${recommendation.strengths.join("; ")}`
-    );
-  }
-
-  if (handoff) {
-    lines.push("", "Mocked handoff:", `- ${handoff.message}`, `- Receipt: ${handoff.id}`);
-  }
-
-  return lines.join("\n");
-}
-
-export function formatGuidance(answer: GuidanceAnswer): string {
-  const lines = [answer.disclaimer, "", answer.title, answer.summary, "", "Considerations:"];
-  for (const consideration of answer.considerations) {
-    lines.push(`- ${consideration}`);
-  }
-  lines.push("", `Helpful data to gather: ${answer.suggestedData.join(", ")}`);
-  return lines.join("\n");
-}
-
-export function formatDemo(profile: BusinessProfile, recommendations: QuoteRecommendation[], answer: GuidanceAnswer): string {
+export function formatOnboarding(summary: OnboardingSummary): string {
   return [
-    formatQuote(profile, recommendations),
+    summary.disclaimer,
     "",
-    "---",
-    "",
-    "Sample guidance response:",
-    formatGuidance(answer)
+    `Onboarded synthetic distributor: ${summary.distributorName}`,
+    `Channels configured: ${summary.channelCount}`,
+    `Jurisdictions configured: ${summary.jurisdictionCount}`,
+    summary.regulatedActionPolicy,
+    `Review roles: ${summary.reviewRoles.join(", ")}`
   ].join("\n");
+}
+
+export function formatWorkspace(workspace: LeadWorkspace): string {
+  const lines = [
+    workspace.disclaimer,
+    "",
+    `Lead workspace: ${workspace.lead.companyName} (${workspace.lead.id})`,
+    `Stage: ${workspace.lead.stage} -> suggested next status: ${workspace.nextStatus}`,
+    `Assigned role: ${workspace.lead.assignedRole}`,
+    `Buyer intent: ${workspace.lead.buyerIntent}`,
+    "",
+    "Tasks:"
+  ];
+  for (const task of workspace.tasks) {
+    lines.push(`- ${task.status}: ${task.title} [${task.ownerRole}] - ${task.reason}`);
+  }
+  lines.push("", "Compliance warnings:");
+  for (const warning of workspace.complianceWarnings.length > 0 ? workspace.complianceWarnings : ["No warnings flagged."]) {
+    lines.push(`- ${warning}`);
+  }
+  return lines.join("\n");
+}
+
+export function formatCampaign(plan: CampaignPlan): string {
+  const lines = [
+    plan.disclaimer,
+    "",
+    `Campaign plan: ${plan.channelLabel}`,
+    `Audience leads: ${plan.audienceLeadIds.join(", ") || "none"}`,
+    `Objective: ${plan.objective}`,
+    `Requires licensed review: ${plan.requiresLicensedReview ? "yes" : "no"}`,
+    "",
+    "Draft steps:"
+  ];
+  for (const step of plan.draftSteps) {
+    lines.push(`- ${step}`);
+  }
+  lines.push("", `Blocked actions: ${plan.blockedActions.join(", ")}`);
+  return lines.join("\n");
+}
+
+export function formatScript(response: ScriptResponse): string {
+  return [
+    response.disclaimer,
+    "",
+    `Objection: ${response.objectionId}`,
+    `Required review: ${response.requiredReview}`,
+    `Allowed for selected role: ${response.allowedForRole ? "yes" : "no"}`,
+    "",
+    response.response
+  ].join("\n");
+}
+
+export function formatCompliance(check: ComplianceCheck): string {
+  const lines = [
+    check.disclaimer,
+    "",
+    `Action: ${check.action}`,
+    `Allowed in demo for selected role: ${check.allowed ? "yes" : "no"}`,
+    `Review roles: ${check.requiredReviewRoles.join(", ")}`,
+    "",
+    "Reasons:"
+  ];
+  for (const reason of check.reasons) {
+    lines.push(`- ${reason}`);
+  }
+  return lines.join("\n");
+}
+
+export function formatReceipt(receipt: MockReceipt): string {
+  return [receipt.disclaimer, "", `Mocked ${receipt.integration} receipt: ${receipt.id}`, receipt.message, `Status: ${receipt.status}`].join("\n");
+}
+
+export function formatDemo(parts: string[]): string {
+  return parts.join("\n\n---\n\n");
 }

@@ -1,90 +1,132 @@
 #!/usr/bin/env node
-import { findProfile, loadSeedData } from "./data.js";
-import { formatDemo, formatGuidance, formatProfiles, formatQuote } from "./format.js";
-import { answerQuestion } from "./guidance.js";
-import { comparePackages, createHandoffReceipt } from "./quoteEngine.js";
-import type { ContactMethod } from "./types.js";
+import { findLead, loadSeedData } from "./data.js";
+import { formatCampaign, formatCompliance, formatDemo, formatOnboarding, formatReceipt, formatScript, formatWorkspace } from "./format.js";
+import { buildLeadWorkspace, checkCompliance, handleObjection, mockIntegration, onboardDistributor, planCampaign } from "./salesAgent.js";
+import type { MockReceipt, RoleId } from "./types.js";
 
 function main(argv: string[]): void {
   const [command = "help", ...args] = argv;
-  const seedData = loadSeedData();
+  const seed = loadSeedData();
   const json = args.includes("--json");
 
   try {
-    if (command === "profiles") {
-      write(json ? seedData.profiles : formatProfiles(seedData.profiles), json);
+    if (command === "onboard") {
+      write(onboardDistributor(seed.distributor), json, formatOnboarding);
       return;
     }
 
-    if (command === "quote") {
-      const profileId = args.find((arg) => !arg.startsWith("--"));
-      if (!profileId) {
-        throw new Error("Usage: coverage-guide-demo quote <profile-id> [--contact email|phone|chat|none] [--json]");
-      }
-      const profile = findProfile(seedData.profiles, profileId);
-      const recommendations = comparePackages(profile, seedData.packages);
-      const contactMethod = readContactMethod(args);
-      const handoff = createHandoffReceipt(profile, contactMethod, recommendations[0]);
-      write(json ? { profile, recommendations, handoff } : formatQuote(profile, recommendations, handoff), json);
+    if (command === "leads") {
+      write(seed.leads, json, (leads) => leads.map((lead) => `${lead.id}: ${lead.companyName} [${lead.stage}, ${lead.assignedRole}]`).join("\n"));
       return;
     }
 
-    if (command === "ask") {
-      const question = args.filter((arg) => arg !== "--json").join(" ").trim();
-      if (!question) {
-        throw new Error("Usage: coverage-guide-demo ask <question> [--json]");
-      }
-      const answer = answerQuestion(question, seedData.guidanceTopics);
-      write(json ? answer : formatGuidance(answer), json);
+    if (command === "workspace") {
+      const lead = findLead(seed.leads, requiredArg(args, "lead-id"));
+      write(buildLeadWorkspace(seed.distributor, lead), json, formatWorkspace);
+      return;
+    }
+
+    if (command === "campaign") {
+      write(planCampaign(seed.distributor, seed.leads, requiredArg(args, "channel-id")), json, formatCampaign);
+      return;
+    }
+
+    if (command === "script") {
+      const role = readRole(args);
+      const text = args.filter((arg) => !arg.startsWith("--") && !isRoleValue(arg)).join(" ");
+      write(handleObjection(text || "general", seed.objections, role), json, formatScript);
+      return;
+    }
+
+    if (command === "compliance") {
+      const role = readRole(args);
+      const action = args.filter((arg) => !arg.startsWith("--") && !isRoleValue(arg)).join(" ") || "educational follow up";
+      write(checkCompliance(seed.distributor, action, role), json, formatCompliance);
+      return;
+    }
+
+    if (command === "mock") {
+      const integration = readIntegration(args);
+      const lead = findLead(seed.leads, requiredArg(args, "lead-id"));
+      write(mockIntegration(integration, lead), json, formatReceipt);
       return;
     }
 
     if (command === "demo") {
-      const profile = findProfile(seedData.profiles, "riverbend-cleaning");
-      const recommendations = comparePackages(profile, seedData.packages);
-      const answer = answerQuestion("what should I know before filing a claim", seedData.guidanceTopics);
-      write(json ? { profile, recommendations, answer } : formatDemo(profile, recommendations, answer), json);
+      const lead = findLead(seed.leads, "lead-1001");
+      const parts = [
+        formatOnboarding(onboardDistributor(seed.distributor)),
+        formatWorkspace(buildLeadWorkspace(seed.distributor, lead)),
+        formatCampaign(planCampaign(seed.distributor, seed.leads, "web-chat")),
+        formatScript(handleObjection("I already have insurance and want a recommendation", seed.objections, "sales-ops")),
+        formatCompliance(checkCompliance(seed.distributor, "recommend and quote a policy", "sales-ops")),
+        formatReceipt(mockIntegration("crm", lead))
+      ];
+      console.log(formatDemo(parts));
       return;
     }
 
-    write(helpText(), false);
+    console.log(helpText());
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error(message);
+    console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;
   }
 }
 
-function readContactMethod(args: string[]): ContactMethod {
-  const contactIndex = args.indexOf("--contact");
-  const value = contactIndex >= 0 ? args[contactIndex + 1] : "none";
-  if (value === "email" || value === "phone" || value === "chat" || value === "none") {
-    return value;
-  }
-  throw new Error("Contact method must be one of: email, phone, chat, none");
+function write<T>(value: T, json: boolean, formatter: (value: T) => string): void {
+  console.log(json ? JSON.stringify(value, null, 2) : formatter(value));
 }
 
-function write(value: unknown, json: boolean): void {
-  if (json) {
-    console.log(JSON.stringify(value, null, 2));
-    return;
+function requiredArg(args: string[], label: string): string {
+  const value = args.find((arg) => !arg.startsWith("--") && !isRoleValue(arg) && !isIntegrationValue(arg));
+  if (!value) {
+    throw new Error(`Missing ${label}.`);
   }
-  console.log(String(value));
+  return value;
+}
+
+function readRole(args: string[]): RoleId {
+  const index = args.indexOf("--role");
+  const value = index >= 0 ? args[index + 1] : "sales-ops";
+  if (value === "sales-ops" || value === "licensed-producer" || value === "compliance-reviewer") {
+    return value;
+  }
+  throw new Error("Role must be one of: sales-ops, licensed-producer, compliance-reviewer");
+}
+
+function readIntegration(args: string[]): MockReceipt["integration"] {
+  const index = args.indexOf("--integration");
+  const value = index >= 0 ? args[index + 1] : "crm";
+  if (value === "crm" || value === "email" || value === "chat") {
+    return value;
+  }
+  throw new Error("Integration must be one of: crm, email, chat");
+}
+
+function isRoleValue(value: string): boolean {
+  return value === "sales-ops" || value === "licensed-producer" || value === "compliance-reviewer";
+}
+
+function isIntegrationValue(value: string): boolean {
+  return value === "crm" || value === "email" || value === "chat";
 }
 
 function helpText(): string {
   return [
-    "Coverage Guide Demo",
+    "Kinro Public Demo",
     "",
     "Commands:",
-    "  demo                                      Run a deterministic demo",
-    "  profiles                                  List synthetic profiles",
-    "  quote <profile-id> [--contact method]     Compare synthetic packages",
-    "  ask <question>                            Show educational guidance",
+    "  demo                                           Run full deterministic demo",
+    "  onboard                                        Show synthetic distributor onboarding",
+    "  leads                                          List synthetic leads",
+    "  workspace <lead-id>                            Build role-aware lead workspace",
+    "  campaign <channel-id>                          Plan a safe channel campaign",
+    "  script <objection text> [--role role]           Generate safe objection response",
+    "  compliance <action text> [--role role]          Check regulated-action gate",
+    "  mock <lead-id> [--integration crm|email|chat]   Create mocked integration receipt",
     "",
     "Options:",
-    "  --json                                    Print JSON output",
-    "  --contact email|phone|chat|none           Record a mocked handoff preference"
+    "  --json                                         Return JSON"
   ].join("\n");
 }
 

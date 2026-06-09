@@ -1,13 +1,13 @@
 {
-  "name": "coverage-guide-demo",
+  "name": "kinro-public-demo",
   "version": "1.0.0",
-  "description": "Clean-room TypeScript demo for synthetic small-business insurance quote comparison and guidance flows.",
+  "description": "Clean-room TypeScript demo for non-regulated AI sales-agent workflows in insurance distribution.",
   "type": "module",
   "bin": {
-    "coverage-guide-demo": "dist/src/cli.js"
+    "kinro-public-demo": "dist/src/cli.js"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -rf dist && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "node dist/src/cli.js",
     "demo": "npm run build && node dist/src/cli.js demo",
@@ -16,7 +16,7 @@
   },
   "keywords": [
     "clean-room",
-    "insurance-demo",
+    "insurance-sales-agent-demo",
     "typescript",
     "synthetic-data"
   ],

@@ -1,25 +1,23 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { BusinessProfile, GuidanceTopic, MarketPackage, SeedData } from "./types.js";
+import type { DistributorProfile, Lead, Objection, SeedData } from "./types.js";
 
 function readJson<T>(relativePath: string): T {
-  const absolutePath = join(process.cwd(), relativePath);
-  return JSON.parse(readFileSync(absolutePath, "utf8")) as T;
+  return JSON.parse(readFileSync(join(process.cwd(), relativePath), "utf8")) as T;
 }
 
 export function loadSeedData(): SeedData {
   return {
-    profiles: readJson<BusinessProfile[]>("data/business-profiles.json"),
-    packages: readJson<MarketPackage[]>("data/market-packages.json"),
-    guidanceTopics: readJson<GuidanceTopic[]>("data/guidance-topics.json")
+    distributor: readJson<DistributorProfile>("data/distributor.json"),
+    leads: readJson<Lead[]>("data/leads.json"),
+    objections: readJson<Objection[]>("data/objections.json")
   };
 }
 
-export function findProfile(profiles: BusinessProfile[], profileId: string): BusinessProfile {
-  const profile = profiles.find((candidate) => candidate.id === profileId);
-  if (!profile) {
-    const available = profiles.map((candidate) => candidate.id).join(", ");
-    throw new Error(`Unknown profile "${profileId}". Available profiles: ${available}`);
+export function findLead(leads: Lead[], leadId: string): Lead {
+  const lead = leads.find((candidate) => candidate.id === leadId);
+  if (!lead) {
+    throw new Error(`Unknown lead "${leadId}". Available leads: ${leads.map((candidate) => candidate.id).join(", ")}`);
   }
-  return profile;
+  return lead;
 }

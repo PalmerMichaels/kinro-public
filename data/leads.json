@@ -1,0 +1,58 @@
+[
+  {
+    "id": "lead-1001",
+    "companyName": "Willow Pantry Demo LLC",
+    "segment": "small-commercial",
+    "sourceChannel": "web-chat",
+    "jurisdiction": "CA",
+    "buyerIntent": "Asked whether a food delivery startup should review business auto and liability needs.",
+    "stage": "new",
+    "priority": "high",
+    "riskFlags": ["mentions current policy", "asks for recommendation", "uses delivery vehicles"],
+    "missingFields": ["licensed contact consent", "current policy documents", "vehicle count"],
+    "assignedRole": "licensed-producer",
+    "consent": "demo-consent-only"
+  },
+  {
+    "id": "lead-1002",
+    "companyName": "North Loop Renters Example",
+    "segment": "consumer",
+    "sourceChannel": "email-nurture",
+    "jurisdiction": "TX",
+    "buyerIntent": "Requested a plain-language explanation of renters coverage categories.",
+    "stage": "qualified",
+    "priority": "medium",
+    "riskFlags": ["coverage explanation requested"],
+    "missingFields": ["preferred appointment time"],
+    "assignedRole": "sales-ops",
+    "consent": "demo-consent-only"
+  },
+  {
+    "id": "lead-1003",
+    "companyName": "Stonebridge Contractor Sandbox",
+    "segment": "small-commercial",
+    "sourceChannel": "partner-portal",
+    "jurisdiction": "NY",
+    "buyerIntent": "Partner submitted a contractor asking for certificate timing and application status.",
+    "stage": "review",
+    "priority": "high",
+    "riskFlags": ["certificate request", "contract wording", "rush deadline"],
+    "missingFields": ["contract requirements", "additional insured wording"],
+    "assignedRole": "compliance-reviewer",
+    "consent": "demo-consent-only"
+  },
+  {
+    "id": "lead-1004",
+    "companyName": "BrightPath Family Demo",
+    "segment": "consumer",
+    "sourceChannel": "web-chat",
+    "jurisdiction": "UK-DEMO",
+    "buyerIntent": "Asked to compare two fictional family protection options at a high level.",
+    "stage": "handoff",
+    "priority": "medium",
+    "riskFlags": ["comparison request", "possible recommendation", "cross-border jurisdiction"],
+    "missingFields": ["licensed reviewer notes"],
+    "assignedRole": "licensed-producer",
+    "consent": "demo-consent-only"
+  }
+]

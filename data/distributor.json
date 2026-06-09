@@ -1,0 +1,57 @@
+{
+  "id": "harbor-mutual-demo",
+  "name": "Harbor Mutual Demo Group",
+  "market": "synthetic personal and small-commercial insurance distribution",
+  "jurisdictions": ["CA", "TX", "NY", "UK-DEMO"],
+  "reviewPolicy": {
+    "licensedReviewRequired": true,
+    "blockedActions": ["quote", "bind", "recommend", "eligibility-decision", "real-outreach"],
+    "approvalRoles": ["licensed-producer", "compliance-reviewer"]
+  },
+  "channels": [
+    {
+      "id": "web-chat",
+      "label": "Website chat assistant",
+      "mode": "chat",
+      "allowedIntents": ["intake", "education", "handoff"]
+    },
+    {
+      "id": "email-nurture",
+      "label": "Email nurture drafts",
+      "mode": "email",
+      "allowedIntents": ["education", "appointment-setting"]
+    },
+    {
+      "id": "partner-portal",
+      "label": "Partner portal inbox",
+      "mode": "portal",
+      "allowedIntents": ["intake", "status-update", "handoff"]
+    },
+    {
+      "id": "agent-assist",
+      "label": "Licensed agent assist",
+      "mode": "internal",
+      "allowedIntents": ["summary", "task-routing", "compliance-review"]
+    }
+  ],
+  "roles": [
+    {
+      "id": "sales-ops",
+      "label": "Sales operations",
+      "canApproveRegulatedLanguage": false,
+      "canSendMockedOutreach": true
+    },
+    {
+      "id": "licensed-producer",
+      "label": "Licensed producer",
+      "canApproveRegulatedLanguage": true,
+      "canSendMockedOutreach": true
+    },
+    {
+      "id": "compliance-reviewer",
+      "label": "Compliance reviewer",
+      "canApproveRegulatedLanguage": true,
+      "canSendMockedOutreach": false
+    }
+  ]
+}

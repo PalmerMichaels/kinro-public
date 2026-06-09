@@ -6,7 +6,8 @@ const requiredPhrases = [
   "synthetic",
   "mocked",
   "not an insurance product",
-  "does not provide insurance, legal, financial, underwriting, or claims advice"
+  "does not provide insurance advice, quoting, underwriting, binding, brokerage, eligibility decisions",
+  "licensed-professional"
 ];
 
 const combinedText = requiredFiles.map((file) => readFileSync(file, "utf8")).join("\n").toLowerCase();
@@ -17,12 +18,15 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-const packageText = readFileSync("data/market-packages.json", "utf8").toLowerCase();
-const blockedTerms = ["attune", "hiscox", "coterie", "hanover", "biberk", "next insurance", "simply business"];
-const blockedHits = blockedTerms.filter((term) => packageText.includes(term));
+const seedText = ["data/distributor.json", "data/leads.json", "data/objections.json"]
+  .map((file) => readFileSync(file, "utf8"))
+  .join("\n")
+  .toLowerCase();
+const blockedTerms = ["attune", "hiscox", "coterie", "hanover", "biberk", "next insurance", "simply business", "gmail", "salesforce.com", "hubspot.com"];
+const blockedHits = blockedTerms.filter((term) => seedText.includes(term));
 
 if (blockedHits.length > 0) {
-  console.error(`Synthetic market data contains real carrier-like names: ${blockedHits.join(", ")}`);
+  console.error(`Synthetic seed data contains real carrier or integration-like names: ${blockedHits.join(", ")}`);
   process.exit(1);
 }
 

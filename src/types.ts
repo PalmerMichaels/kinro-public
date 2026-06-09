@@ -1,94 +1,124 @@
-export type Trade = "cleaning" | "plumbing" | "handyman" | "landscaping";
+export type ChannelMode = "chat" | "email" | "portal" | "internal";
+export type LeadStage = "new" | "qualified" | "review" | "handoff" | "closed";
+export type Priority = "low" | "medium" | "high";
+export type RoleId = "sales-ops" | "licensed-producer" | "compliance-reviewer";
 
-export type ContactMethod = "email" | "phone" | "chat" | "none";
-
-export interface BusinessOperations {
-  worksAtClientSites: boolean;
-  usesVehicles: boolean;
-  storesTools: boolean;
-  hiresSubcontractors: boolean;
-  seasonalWork: boolean;
-}
-
-export interface BusinessProfile {
+export interface Channel {
   id: string;
-  displayName: string;
-  trade: Trade;
-  annualRevenue: number;
-  employees: number;
-  state: string;
-  operations: BusinessOperations;
-  priorities: string[];
-}
-
-export interface CoverageLine {
-  code: string;
   label: string;
-  limit: number;
-  deductible: number;
-  matchesNeeds: string[];
+  mode: ChannelMode;
+  allowedIntents: string[];
 }
 
-export interface MarketPackage {
+export interface Role {
+  id: RoleId;
+  label: string;
+  canApproveRegulatedLanguage: boolean;
+  canSendMockedOutreach: boolean;
+}
+
+export interface ReviewPolicy {
+  licensedReviewRequired: boolean;
+  blockedActions: string[];
+  approvalRoles: RoleId[];
+}
+
+export interface DistributorProfile {
   id: string;
   name: string;
-  appetite: Trade[];
-  baseMonthlyPremium: number;
-  coverageLines: CoverageLine[];
-  strengths: string[];
-  cautions: string[];
+  market: string;
+  jurisdictions: string[];
+  reviewPolicy: ReviewPolicy;
+  channels: Channel[];
+  roles: Role[];
 }
 
-export interface GuidanceTopic {
+export interface Lead {
   id: string;
-  aliases: string[];
-  title: string;
-  summary: string;
-  considerations: string[];
-  suggestedData: string[];
+  companyName: string;
+  segment: "consumer" | "small-commercial";
+  sourceChannel: string;
+  jurisdiction: string;
+  buyerIntent: string;
+  stage: LeadStage;
+  priority: Priority;
+  riskFlags: string[];
+  missingFields: string[];
+  assignedRole: RoleId;
+  consent: "demo-consent-only";
+}
+
+export interface Objection {
+  id: string;
+  signals: string[];
+  safeResponse: string;
+  requiredReview: RoleId;
 }
 
 export interface SeedData {
-  profiles: BusinessProfile[];
-  packages: MarketPackage[];
-  guidanceTopics: GuidanceTopic[];
+  distributor: DistributorProfile;
+  leads: Lead[];
+  objections: Objection[];
 }
 
-export interface DerivedNeed {
-  code: string;
-  label: string;
-  reason: string;
-}
-
-export interface QuoteRecommendation {
-  rank: number;
-  packageId: string;
-  packageName: string;
-  score: number;
-  monthlyPremium: number;
-  annualPremium: number;
-  matchedNeeds: DerivedNeed[];
-  missingNeeds: DerivedNeed[];
-  strengths: string[];
-  cautions: string[];
-  fitSummary: string;
+export interface OnboardingSummary {
+  distributorName: string;
+  channelCount: number;
+  jurisdictionCount: number;
+  regulatedActionPolicy: string;
+  reviewRoles: RoleId[];
   disclaimer: string;
 }
 
-export interface HandoffReceipt {
+export interface Task {
   id: string;
-  status: "mocked-not-sent";
-  contactMethod: ContactMethod;
-  profileId: string;
-  packageId: string;
-  message: string;
+  leadId: string;
+  ownerRole: RoleId;
+  status: "blocked" | "ready" | "needs-review";
+  title: string;
+  reason: string;
 }
 
-export interface GuidanceAnswer {
-  topicId: string;
-  title: string;
-  summary: string;
-  considerations: string[];
-  suggestedData: string[];
+export interface LeadWorkspace {
+  lead: Lead;
+  tasks: Task[];
+  nextStatus: LeadStage;
+  complianceWarnings: string[];
+  disclaimer: string;
+}
+
+export interface CampaignPlan {
+  channelId: string;
+  channelLabel: string;
+  audienceLeadIds: string[];
+  objective: string;
+  draftSteps: string[];
+  blockedActions: string[];
+  requiresLicensedReview: boolean;
+  disclaimer: string;
+}
+
+export interface ScriptResponse {
+  objectionId: string;
+  response: string;
+  requiredReview: RoleId;
+  allowedForRole: boolean;
+  disclaimer: string;
+}
+
+export interface ComplianceCheck {
+  action: string;
+  allowed: boolean;
+  requiredReviewRoles: RoleId[];
+  reasons: string[];
+  disclaimer: string;
+}
+
+export interface MockReceipt {
+  id: string;
+  integration: "crm" | "email" | "chat";
+  status: "mocked-not-sent";
+  leadId: string;
+  message: string;
   disclaimer: string;
 }
