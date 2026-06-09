@@ -1,0 +1,28 @@
+{
+  "name": "coverage-guide-demo",
+  "version": "1.0.0",
+  "description": "Clean-room TypeScript demo for synthetic small-business insurance quote comparison and guidance flows.",
+  "type": "module",
+  "bin": {
+    "coverage-guide-demo": "dist/src/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/src/cli.js",
+    "demo": "npm run build && node dist/src/cli.js demo",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "validate": "npm run typecheck && npm test && node scripts/validate-clean-room.mjs && npm run demo"
+  },
+  "keywords": [
+    "clean-room",
+    "insurance-demo",
+    "typescript",
+    "synthetic-data"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "riverbend-cleaning",
+    "displayName": "Riverbend Cleaning Collective",
+    "trade": "cleaning",
+    "annualRevenue": 420000,
+    "employees": 8,
+    "state": "OR",
+    "operations": {
+      "worksAtClientSites": true,
+      "usesVehicles": true,
+      "storesTools": true,
+      "hiresSubcontractors": false,
+      "seasonalWork": false
+    },
+    "priorities": ["fast certificates", "employee injury planning", "portable equipment"]
+  },
+  {
+    "id": "copperline-plumbing",
+    "displayName": "Copperline Plumbing Studio",
+    "trade": "plumbing",
+    "annualRevenue": 960000,
+    "employees": 14,
+    "state": "AZ",
+    "operations": {
+      "worksAtClientSites": true,
+      "usesVehicles": true,
+      "storesTools": true,
+      "hiresSubcontractors": true,
+      "seasonalWork": false
+    },
+    "priorities": ["subcontractor controls", "vehicle exposure", "higher liability limits"]
+  },
+  {
+    "id": "northstar-handyman",
+    "displayName": "Northstar Handyman Lab",
+    "trade": "handyman",
+    "annualRevenue": 265000,
+    "employees": 3,
+    "state": "MN",
+    "operations": {
+      "worksAtClientSites": true,
+      "usesVehicles": true,
+      "storesTools": true,
+      "hiresSubcontractors": true,
+      "seasonalWork": false
+    },
+    "priorities": ["tools in transit", "client property damage", "contract review"]
+  },
+  {
+    "id": "sage-hill-landscaping",
+    "displayName": "Sage Hill Landscaping Example",
+    "trade": "landscaping",
+    "annualRevenue": 610000,
+    "employees": 11,
+    "state": "CO",
+    "operations": {
+      "worksAtClientSites": true,
+      "usesVehicles": true,
+      "storesTools": true,
+      "hiresSubcontractors": false,
+      "seasonalWork": true
+    },
+    "priorities": ["seasonal payroll changes", "equipment schedules", "snow-service exclusions"]
+  }
+]

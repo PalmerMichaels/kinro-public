@@ -1,0 +1,54 @@
+[
+  {
+    "id": "coverage-needs",
+    "aliases": ["coverage", "need", "policy", "liability", "insured"],
+    "title": "Thinking About Coverage Needs",
+    "summary": "Start by mapping where the business could injure someone, damage property, use vehicles, employ staff, store tools, or sign contracts that require certificates.",
+    "considerations": [
+      "Client-site service work often raises general liability and property damage questions.",
+      "Vehicles used for jobs may need separate commercial auto review.",
+      "Employees can trigger workers compensation obligations that vary by jurisdiction.",
+      "Tools and mobile equipment may need scheduling or inland-marine-style coverage review."
+    ],
+    "suggestedData": ["trade", "annual revenue", "employee count", "vehicle use", "tools value", "contract requirements"]
+  },
+  {
+    "id": "claim-readiness",
+    "aliases": ["claim", "incident", "loss", "damage", "injury"],
+    "title": "Claim Readiness Basics",
+    "summary": "A software workflow can help collect facts consistently, but real claim decisions belong to the insurer or authorized claims professional.",
+    "considerations": [
+      "Record the date, location, people involved, photos, and immediate safety steps.",
+      "Keep damaged property, receipts, and contracts when safe and practical.",
+      "Avoid admitting fault in a software note; document facts neutrally.",
+      "Contact the actual carrier or licensed representative for claim filing instructions."
+    ],
+    "suggestedData": ["policy number", "incident date", "description", "photos", "witnesses", "contact details"]
+  },
+  {
+    "id": "certificate-workflow",
+    "aliases": ["certificate", "coi", "additional insured", "contract", "proof"],
+    "title": "Certificate Workflow Planning",
+    "summary": "A demo can show how a business tracks certificate requests, but real certificates must be issued through authorized insurance channels.",
+    "considerations": [
+      "Capture the requesting party, job location, project dates, and required wording.",
+      "Flag requests for additional insured or waiver wording for review.",
+      "Compare certificate requirements against current policy limits before accepting a job.",
+      "Store request history so renewals and recurring clients are easier to manage."
+    ],
+    "suggestedData": ["requester", "job address", "project dates", "required limits", "special wording"]
+  },
+  {
+    "id": "quote-comparison",
+    "aliases": ["quote", "compare", "premium", "price", "option"],
+    "title": "Quote Comparison Framing",
+    "summary": "A clean comparison should separate price from coverage fit, missing lines, deductibles, and operational assumptions.",
+    "considerations": [
+      "Cheapest is not automatically best if key exposures are missing.",
+      "A package can fit one trade but be a poor fit for another.",
+      "Synthetic scoring is useful for demos, not for underwriting or advice.",
+      "Real quotes depend on applications, state rules, carrier appetite, and underwriting review."
+    ],
+    "suggestedData": ["business profile", "operations", "desired contact method", "coverage priorities"]
+  }
+]
