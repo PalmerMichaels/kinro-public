@@ -107,6 +107,20 @@ export interface IntakeChecklist {
   disclaimer: string;
 }
 
+export interface HandoffQueueItem {
+  leadId: string;
+  accountName: string;
+  priority: Priority;
+  assignedRole: RoleId;
+  reasons: string[];
+  status: "queued-for-human-review";
+}
+
+export interface HandoffQueue {
+  items: HandoffQueueItem[];
+  disclaimer: string;
+}
+
 export interface ScriptQaResult {
   promptId: string;
   response: string;

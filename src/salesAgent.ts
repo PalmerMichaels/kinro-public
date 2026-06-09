@@ -2,6 +2,7 @@ import type {
   CampaignPlan,
   ComplianceCheck,
   DistributorProfile,
+  HandoffQueue,
   Lead,
   LeadStage,
   LeadWorkspace,
@@ -15,7 +16,7 @@ import type {
 } from "./types.js";
 
 export const SAFETY_DISCLAIMER =
-  "Clean-room non-regulated distribution workflow demo only: synthetic leads/accounts, mocked integrations, no insurance advice, quote tools, quoting, underwriting, binding, brokerage, eligibility decisions, lead scraping, credential collection, real outreach, or regulated selling. Licensed-professional and compliance review are required before any real use.";
+  "Clean-room non-regulated distribution workflow demo only: synthetic leads/accounts and mocked integrations. No insurance advice, quoting, underwriting, binding, brokerage, eligibility decisions, real outreach, lead scraping, credential collection, or regulated selling. Licensed-professional and compliance review are required before any real use.";
 
 export function onboardDistributor(distributor: DistributorProfile): OnboardingSummary {
   return {
@@ -111,6 +112,24 @@ export function buildIntakeChecklist(lead: Lead): IntakeChecklist {
   };
 }
 
+export function buildHandoffQueue(distributor: DistributorProfile, leads: Lead[]): HandoffQueue {
+  const items = leads
+    .filter((lead) => lead.stage === "handoff" || lead.riskFlags.some((flag) => isRegulatedSignal(flag)) || lead.assignedRole !== "sales-ops")
+    .map((lead) => ({
+      leadId: lead.id,
+      accountName: lead.companyName,
+      priority: lead.priority,
+      assignedRole: lead.assignedRole,
+      reasons: buildComplianceWarnings(distributor, lead),
+      status: "queued-for-human-review" as const
+    }));
+
+  return {
+    items,
+    disclaimer: SAFETY_DISCLAIMER
+  };
+}
+
 export function qaScript(text: string, scriptPrompts: ScriptPrompt[], role: RoleId): ScriptQaResult {
   const normalizedText = text.toLowerCase();
   const prompt =
@@ -194,7 +213,7 @@ function isRegulatedSignal(value: string): boolean {
 }
 
 function bannedTerms(): string[] {
-  return ["recommend", "quote", "bind", "coverage", "policy", "eligibility", "underwrite", "brokerage", "credential"];
+  return ["advice", "quote", "quoting", "bind", "binding", "policy", "eligibility", "underwrite", "underwriting", "brokerage", "credential"];
 }
 
 function normalizeGuardrailText(value: string): string {

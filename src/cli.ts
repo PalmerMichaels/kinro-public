@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { findLead, loadSeedData } from "./data.js";
-import { formatCampaign, formatCompliance, formatDemo, formatIntake, formatOnboarding, formatReceipt, formatScript, formatWorkspace } from "./format.js";
-import { buildIntakeChecklist, buildLeadWorkspace, checkCompliance, mockIntegration, onboardDistributor, planCampaign, qaScript } from "./salesAgent.js";
+import { formatCampaign, formatCompliance, formatDemo, formatHandoffQueue, formatIntake, formatOnboarding, formatReceipt, formatScript, formatWorkspace } from "./format.js";
+import { buildHandoffQueue, buildIntakeChecklist, buildLeadWorkspace, checkCompliance, mockIntegration, onboardDistributor, planCampaign, qaScript } from "./salesAgent.js";
 import type { MockReceipt, RoleId } from "./types.js";
 
 function main(argv: string[]): void {
@@ -37,6 +37,11 @@ function main(argv: string[]): void {
       return;
     }
 
+    if (command === "handoff") {
+      write(buildHandoffQueue(seed.distributor, seed.leads), json, formatHandoffQueue);
+      return;
+    }
+
     if (command === "script") {
       const role = readRole(args);
       const text = args.filter((arg) => !arg.startsWith("--") && !isRoleValue(arg)).join(" ");
@@ -66,6 +71,7 @@ function main(argv: string[]): void {
         formatCampaign(planCampaign(seed.distributor, seed.leads, "web-chat")),
         formatIntake(buildIntakeChecklist(lead)),
         formatScript(qaScript("The buyer wants a human call today", seed.scriptPrompts, "sales-ops")),
+        formatHandoffQueue(buildHandoffQueue(seed.distributor, seed.leads)),
         formatCompliance(checkCompliance(seed.distributor, "send real outreach and collect credentials", "sales-ops")),
         formatReceipt(mockIntegration("carrier-style", lead))
       ];
@@ -129,6 +135,7 @@ function helpText(): string {
     "  workspace <lead-id>                            Build role-aware lead workspace",
     "  campaign <channel-id>                          Plan a safe channel campaign",
     "  intake <lead-id>                                Build eligibility-safe intake checklist",
+    "  handoff                                         Show human handoff queue",
     "  script <script text> [--role role]              Run script QA and safe response lookup",
     "  compliance <action text> [--role role]          Check regulated-action gate",
     "  mock <lead-id> [--integration crm|email|chat|carrier-style]   Create mocked integration receipt",

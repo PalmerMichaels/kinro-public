@@ -8,7 +8,7 @@ Public descriptions for Kinro describe AI sales agents for insurance distributio
 
 - Build an original TypeScript demonstration from public descriptions only.
 - Do not copy proprietary source, private data, visual design, logos, trademarks, assets, or marketing copy.
-- Do not implement insurance advice, quote tools, product recommendations, underwriting, binding, brokerage, eligibility decisions, lead scraping, credential collection, real outreach, or regulated selling.
+- Do not implement insurance advice, quoting, product recommendations, underwriting, binding, brokerage, eligibility decisions, lead scraping, credential collection, real outreach, or regulated selling.
 - Use only synthetic leads, fictional accounts, synthetic scripts, and mocked CRM/email/carrier-style integrations.
 - Require licensed-professional or compliance review before any simulated handoff that would become real-world insurance communication.
 - Keep all channel activity local and non-transmitting.
@@ -22,6 +22,7 @@ Public descriptions for Kinro describe AI sales agents for insurance distributio
 - Implement script QA for banned terms, escalation triggers, and non-advisory response snippets.
 - Implement eligibility-safe intake checklists that collect facts without making eligibility decisions.
 - Implement a compliance guardrail that blocks regulated actions without changing external systems.
+- Implement a human handoff queue for leads requiring licensed-professional or compliance review.
 - Implement mocked CRM, email, and carrier-style integration receipts that never transmit data.
 - Include seed data, tests, validation scripts, and documentation.
 

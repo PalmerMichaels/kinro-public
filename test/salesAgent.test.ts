@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { findLead, loadSeedData } from "../src/data.js";
-import { buildIntakeChecklist, buildLeadWorkspace, checkCompliance, mockIntegration, onboardDistributor, planCampaign, qaScript, SAFETY_DISCLAIMER } from "../src/salesAgent.js";
+import { buildHandoffQueue, buildIntakeChecklist, buildLeadWorkspace, checkCompliance, mockIntegration, onboardDistributor, planCampaign, qaScript, SAFETY_DISCLAIMER } from "../src/salesAgent.js";
 
 test("onboarding exposes channels, review roles, and safety disclaimer", () => {
   const { distributor } = loadSeedData();
@@ -51,10 +51,18 @@ test("script QA blocks non-approved sales ops role from sensitive script", () =>
 
 test("script QA reports banned terms", () => {
   const { scriptPrompts } = loadSeedData();
-  const response = qaScript("We can quote this policy", scriptPrompts, "compliance-reviewer");
+  const response = qaScript("We can collect credentials during this workflow", scriptPrompts, "compliance-reviewer");
 
-  assert.ok(response.bannedTermHits.includes("quote"));
+  assert.ok(response.bannedTermHits.includes("credential"));
   assert.equal(response.allowedForRole, false);
+});
+
+test("human handoff queue routes sensitive synthetic leads", () => {
+  const { distributor, leads } = loadSeedData();
+  const queue = buildHandoffQueue(distributor, leads);
+
+  assert.ok(queue.items.length >= 1);
+  assert.ok(queue.items.every((item) => item.status === "queued-for-human-review"));
 });
 
 test("compliance check blocks real outreach and credential collection for sales ops", () => {

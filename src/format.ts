@@ -1,4 +1,4 @@
-import type { CampaignPlan, ComplianceCheck, IntakeChecklist, LeadWorkspace, MockReceipt, OnboardingSummary, ScriptQaResult } from "./types.js";
+import type { CampaignPlan, ComplianceCheck, HandoffQueue, IntakeChecklist, LeadWorkspace, MockReceipt, OnboardingSummary, ScriptQaResult } from "./types.js";
 
 export function formatOnboarding(summary: OnboardingSummary): string {
   return [
@@ -76,6 +76,20 @@ export function formatScript(response: ScriptQaResult): string {
     "",
     response.response
   ].join("\n");
+}
+
+export function formatHandoffQueue(queue: HandoffQueue): string {
+  const lines = [queue.disclaimer, "", "Human handoff queue:"];
+  for (const item of queue.items) {
+    lines.push(`- ${item.priority}: ${item.accountName} (${item.leadId}) -> ${item.assignedRole} [${item.status}]`);
+    for (const reason of item.reasons.length > 0 ? item.reasons : ["Human review requested by workflow stage."]) {
+      lines.push(`  Reason: ${reason}`);
+    }
+  }
+  if (queue.items.length === 0) {
+    lines.push("- No synthetic leads queued.");
+  }
+  return lines.join("\n");
 }
 
 export function formatCompliance(check: ComplianceCheck): string {

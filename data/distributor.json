@@ -5,7 +5,7 @@
   "jurisdictions": ["CA", "TX", "NY", "UK-DEMO"],
   "reviewPolicy": {
     "licensedReviewRequired": true,
-    "blockedActions": ["quote", "bind", "recommend", "coverage-advice", "eligibility-decision", "real-outreach", "credential-collection"],
+    "blockedActions": ["quoting", "binding", "insurance-advice", "product-selection", "eligibility-decision", "real-outreach", "credential-collection", "regulated-selling"],
     "approvalRoles": ["licensed-producer", "compliance-reviewer"]
   },
   "channels": [

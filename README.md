@@ -14,7 +14,7 @@ The implementation is based only on public descriptions of a company building AI
 
 ## Important Limitations
 
-This is not an insurance product and does not provide insurance advice, quote tools, quoting, underwriting, binding, brokerage, eligibility decisions, real outreach, lead scraping, credential collection, regulated selling, legal advice, financial advice, or claims advice. All leads, accounts, organizations, channels, scripts, and receipts are synthetic. Any real insurance communication or sales workflow requires review by appropriately licensed professionals and the responsible compliance team.
+This is not an insurance product and does not provide insurance advice, quoting, underwriting, binding, brokerage, eligibility decisions, real outreach, lead scraping, credential collection, or regulated selling. All leads, accounts, organizations, channels, scripts, and receipts are synthetic. Any real insurance communication or sales workflow requires review by appropriately licensed professionals and the responsible compliance team.
 
 ## Requirements
 
@@ -64,6 +64,12 @@ Run script QA:
 
 ```bash
 node dist/src/cli.js script "The buyer wants a human call today" --role sales-ops
+```
+
+Show the human handoff queue:
+
+```bash
+node dist/src/cli.js handoff
 ```
 
 Check whether an action is blocked by the compliance gate:
