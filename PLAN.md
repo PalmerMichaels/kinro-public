@@ -2,26 +2,27 @@
 
 ## Public Concept Summary
 
-Public descriptions for Kinro describe AI sales agents for insurance distribution that help sellers meet buyers across conversational and digital channels. The public YC page mentions buyer qualification, answering questions, personalized explanations, quoting, option comparison, binding, handoff to licensed agents, compliance evaluation, and use by brokers and direct-to-consumer carriers.
+Public descriptions for Kinro describe AI sales agents for insurance distribution that help sellers meet buyers across conversational and digital channels while operating with strong compliance controls. This clean-room repository demonstrates only the non-regulated sales-operations layer around that concept.
 
 ## Clean-Room Boundaries
 
 - Build an original TypeScript demonstration from public descriptions only.
-- Do not copy proprietary source, private data, visual design, logos, trademarks, carrier assets, or marketing copy.
-- Do not implement real insurance advice, quoting, underwriting, binding, brokerage, eligibility decisions, lead scraping, credential collection, or regulated selling.
-- Use only synthetic leads, fictional organizations, fictional products, scripted objections, and mocked CRM/email/chat integrations.
-- Require licensed-professional review before any simulated outreach, recommendation-like language, quote request, or handoff.
+- Do not copy proprietary source, private data, visual design, logos, trademarks, assets, or marketing copy.
+- Do not implement insurance advice, quote tools, product recommendations, underwriting, binding, brokerage, eligibility decisions, lead scraping, credential collection, real outreach, or regulated selling.
+- Use only synthetic leads, fictional accounts, synthetic scripts, and mocked CRM/email/carrier-style integrations.
+- Require licensed-professional or compliance review before any simulated handoff that would become real-world insurance communication.
 - Keep all channel activity local and non-transmitting.
 
 ## Implementation Scope
 
 - Create a runnable TypeScript CLI called `kinro-public-demo`.
 - Implement onboarding for a fictional insurance distributor with roles, channels, jurisdictions, and approval rules.
-- Implement a synthetic lead workspace with lead stages, risk flags, next tasks, and role-aware task/status management.
-- Implement a channel campaign planner for web chat, email, partner portal, and agent-assist channels.
-- Implement script and objection handling that produces compliant, non-advisory response snippets.
-- Implement a compliance checklist that blocks regulated actions without licensed review.
-- Implement mocked CRM, email, and chat integration receipts that never transmit data.
+- Implement synthetic account and lead workspaces with source, consent, intake-completeness, and handoff readiness checks.
+- Implement an outreach planner that drafts internal campaign steps without sending real messages.
+- Implement script QA for banned terms, escalation triggers, and non-advisory response snippets.
+- Implement eligibility-safe intake checklists that collect facts without making eligibility decisions.
+- Implement a compliance guardrail that blocks regulated actions without changing external systems.
+- Implement mocked CRM, email, and carrier-style integration receipts that never transmit data.
 - Include seed data, tests, validation scripts, and documentation.
 
 ## Repository Deliverables

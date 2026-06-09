@@ -1,0 +1,26 @@
+[
+  {
+    "id": "privacy-security",
+    "signals": ["privacy", "secure", "data", "documents"],
+    "safeResponse": "This demo uses synthetic data only. In a real deployment, secure intake, consent, retention, and access controls must be approved before collecting any documents or personal data.",
+    "requiredReview": "compliance-reviewer"
+  },
+  {
+    "id": "human-handoff",
+    "signals": ["human", "agent", "representative", "call me"],
+    "safeResponse": "I can prepare a neutral handoff summary and place it in a mocked review queue. This demo does not contact anyone or send messages.",
+    "requiredReview": "licensed-producer"
+  },
+  {
+    "id": "duplicate-contact",
+    "signals": ["already contacted", "stop", "unsubscribe", "do not contact"],
+    "safeResponse": "I can mark the synthetic record for suppression review and stop local demo follow-up steps. No real outreach is sent by this tool.",
+    "requiredReview": "compliance-reviewer"
+  },
+  {
+    "id": "timeline-pressure",
+    "signals": ["urgent", "today", "asap", "deadline"],
+    "safeResponse": "I can route the synthetic account to the handoff queue with urgency notes. This demo cannot promise timing or complete regulated transactions.",
+    "requiredReview": "licensed-producer"
+  }
+]

@@ -6,15 +6,16 @@ import type {
   LeadStage,
   LeadWorkspace,
   MockReceipt,
-  Objection,
   OnboardingSummary,
   RoleId,
-  ScriptResponse,
+  ScriptPrompt,
+  ScriptQaResult,
+  IntakeChecklist,
   Task
 } from "./types.js";
 
 export const SAFETY_DISCLAIMER =
-  "Clean-room non-regulated demo only: synthetic leads, mocked integrations, no insurance advice, quoting, underwriting, binding, brokerage, eligibility decisions, lead scraping, credential collection, real outreach, or regulated selling. Licensed-professional review is required before any real use.";
+  "Clean-room non-regulated distribution workflow demo only: synthetic leads/accounts, mocked integrations, no insurance advice, quote tools, quoting, underwriting, binding, brokerage, eligibility decisions, lead scraping, credential collection, real outreach, or regulated selling. Licensed-professional and compliance review are required before any real use.";
 
 export function onboardDistributor(distributor: DistributorProfile): OnboardingSummary {
   return {
@@ -54,7 +55,7 @@ export function buildLeadWorkspace(distributor: DistributorProfile, lead: Lead):
       ownerRole: "licensed-producer",
       status: "needs-review",
       title: "Prepare licensed-professional handoff",
-      reason: "Lead contains recommendation, quote, binding, certificate, or jurisdiction-sensitive language."
+      reason: "Lead contains product-selection, transaction, handoff, or jurisdiction-sensitive language."
     });
   }
 
@@ -80,10 +81,10 @@ export function planCampaign(distributor: DistributorProfile, leads: Lead[], cha
     channelId: channel.id,
     channelLabel: channel.label,
     audienceLeadIds: audience.map((lead) => lead.id),
-    objective: channel.mode === "internal" ? "Summarize and route work for licensed review." : "Draft educational, consent-based follow-up for synthetic leads.",
+    objective: channel.mode === "internal" ? "Summarize and route work for review." : "Draft operational, consent-based workflow steps for synthetic leads.",
     draftSteps: [
       "Confirm demo consent and synthetic lead source.",
-      "Use educational language only; avoid product recommendations or eligibility conclusions.",
+      "Use operational language only; avoid product selection, advice, or eligibility conclusions.",
       "Route regulated phrases to a licensed producer or compliance reviewer.",
       `Keep activity local; ${channel.label} integration is mocked.`
     ],
@@ -93,29 +94,48 @@ export function planCampaign(distributor: DistributorProfile, leads: Lead[], cha
   };
 }
 
-export function handleObjection(text: string, objections: Objection[], role: RoleId): ScriptResponse {
+export function buildIntakeChecklist(lead: Lead): IntakeChecklist {
+  return {
+    leadId: lead.id,
+    accountName: lead.companyName,
+    checklistItems: [
+      "Confirm synthetic source channel and demo consent marker.",
+      "Capture preferred contact window without sending outreach.",
+      "Collect account operations facts only as intake fields.",
+      "Route product-selection, pricing, or transaction requests to the handoff queue.",
+      "Do not decide eligibility or suggest insurance products."
+    ],
+    missingFields: lead.missingFields,
+    decisionBoundary: "Checklist captures facts for routing only; it does not decide eligibility or produce regulated outputs.",
+    disclaimer: SAFETY_DISCLAIMER
+  };
+}
+
+export function qaScript(text: string, scriptPrompts: ScriptPrompt[], role: RoleId): ScriptQaResult {
   const normalizedText = text.toLowerCase();
-  const objection =
-    objections.find((candidate) => candidate.signals.some((signal) => normalizedText.includes(signal))) ?? {
+  const prompt =
+    scriptPrompts.find((candidate) => candidate.signals.some((signal) => normalizedText.includes(signal))) ?? {
       id: "general-safe-response",
       signals: [],
       safeResponse:
-        "I can collect context and prepare a neutral summary for review. I cannot recommend, quote, bind, or decide eligibility.",
+        "I can collect operational context and prepare a neutral routing summary. I cannot provide insurance advice, pricing, product selection, or eligibility decisions.",
       requiredReview: "licensed-producer" as RoleId
     };
+  const bannedTermHits = bannedTerms().filter((term) => normalizedText.includes(term));
 
   return {
-    objectionId: objection.id,
-    response: objection.safeResponse,
-    requiredReview: objection.requiredReview,
-    allowedForRole: role === objection.requiredReview || role === "compliance-reviewer",
+    promptId: prompt.id,
+    response: prompt.safeResponse,
+    requiredReview: prompt.requiredReview,
+    allowedForRole: bannedTermHits.length === 0 && (role === prompt.requiredReview || role === "compliance-reviewer"),
+    bannedTermHits,
     disclaimer: SAFETY_DISCLAIMER
   };
 }
 
 export function checkCompliance(distributor: DistributorProfile, action: string, role: RoleId): ComplianceCheck {
-  const normalizedAction = action.toLowerCase();
-  const blockedMatches = distributor.reviewPolicy.blockedActions.filter((blocked) => normalizedAction.includes(blocked));
+  const normalizedAction = normalizeGuardrailText(action);
+  const blockedMatches = distributor.reviewPolicy.blockedActions.filter((blocked) => normalizedAction.includes(normalizeGuardrailText(blocked)));
   const roleCanApprove = distributor.reviewPolicy.approvalRoles.includes(role);
   const allowed = blockedMatches.length === 0 || roleCanApprove;
   const reasons = blockedMatches.length === 0
@@ -170,7 +190,13 @@ function calculateNextStatus(lead: Lead, tasks: Task[]): LeadStage {
 
 function isRegulatedSignal(value: string): boolean {
   const normalized = value.toLowerCase();
-  return ["recommendation", "quote", "bind", "coverage", "certificate", "policy", "eligibility", "jurisdiction"].some((term) =>
-    normalized.includes(term)
-  );
+  return bannedTerms().some((term) => normalized.includes(term)) || ["product selection", "handoff", "jurisdiction", "credential"].some((term) => normalized.includes(term));
+}
+
+function bannedTerms(): string[] {
+  return ["recommend", "quote", "bind", "coverage", "policy", "eligibility", "underwrite", "brokerage", "credential"];
+}
+
+function normalizeGuardrailText(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }

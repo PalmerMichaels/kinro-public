@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { findLead, loadSeedData } from "./data.js";
-import { formatCampaign, formatCompliance, formatDemo, formatOnboarding, formatReceipt, formatScript, formatWorkspace } from "./format.js";
-import { buildLeadWorkspace, checkCompliance, handleObjection, mockIntegration, onboardDistributor, planCampaign } from "./salesAgent.js";
+import { formatCampaign, formatCompliance, formatDemo, formatIntake, formatOnboarding, formatReceipt, formatScript, formatWorkspace } from "./format.js";
+import { buildIntakeChecklist, buildLeadWorkspace, checkCompliance, mockIntegration, onboardDistributor, planCampaign, qaScript } from "./salesAgent.js";
 import type { MockReceipt, RoleId } from "./types.js";
 
 function main(argv: string[]): void {
@@ -31,10 +31,16 @@ function main(argv: string[]): void {
       return;
     }
 
+    if (command === "intake") {
+      const lead = findLead(seed.leads, requiredArg(args, "lead-id"));
+      write(buildIntakeChecklist(lead), json, formatIntake);
+      return;
+    }
+
     if (command === "script") {
       const role = readRole(args);
       const text = args.filter((arg) => !arg.startsWith("--") && !isRoleValue(arg)).join(" ");
-      write(handleObjection(text || "general", seed.objections, role), json, formatScript);
+      write(qaScript(text || "general", seed.scriptPrompts, role), json, formatScript);
       return;
     }
 
@@ -58,9 +64,10 @@ function main(argv: string[]): void {
         formatOnboarding(onboardDistributor(seed.distributor)),
         formatWorkspace(buildLeadWorkspace(seed.distributor, lead)),
         formatCampaign(planCampaign(seed.distributor, seed.leads, "web-chat")),
-        formatScript(handleObjection("I already have insurance and want a recommendation", seed.objections, "sales-ops")),
-        formatCompliance(checkCompliance(seed.distributor, "recommend and quote a policy", "sales-ops")),
-        formatReceipt(mockIntegration("crm", lead))
+        formatIntake(buildIntakeChecklist(lead)),
+        formatScript(qaScript("The buyer wants a human call today", seed.scriptPrompts, "sales-ops")),
+        formatCompliance(checkCompliance(seed.distributor, "send real outreach and collect credentials", "sales-ops")),
+        formatReceipt(mockIntegration("carrier-style", lead))
       ];
       console.log(formatDemo(parts));
       return;
@@ -97,10 +104,10 @@ function readRole(args: string[]): RoleId {
 function readIntegration(args: string[]): MockReceipt["integration"] {
   const index = args.indexOf("--integration");
   const value = index >= 0 ? args[index + 1] : "crm";
-  if (value === "crm" || value === "email" || value === "chat") {
+  if (value === "crm" || value === "email" || value === "chat" || value === "carrier-style") {
     return value;
   }
-  throw new Error("Integration must be one of: crm, email, chat");
+  throw new Error("Integration must be one of: crm, email, chat, carrier-style");
 }
 
 function isRoleValue(value: string): boolean {
@@ -108,7 +115,7 @@ function isRoleValue(value: string): boolean {
 }
 
 function isIntegrationValue(value: string): boolean {
-  return value === "crm" || value === "email" || value === "chat";
+  return value === "crm" || value === "email" || value === "chat" || value === "carrier-style";
 }
 
 function helpText(): string {
@@ -121,9 +128,10 @@ function helpText(): string {
     "  leads                                          List synthetic leads",
     "  workspace <lead-id>                            Build role-aware lead workspace",
     "  campaign <channel-id>                          Plan a safe channel campaign",
-    "  script <objection text> [--role role]           Generate safe objection response",
+    "  intake <lead-id>                                Build eligibility-safe intake checklist",
+    "  script <script text> [--role role]              Run script QA and safe response lookup",
     "  compliance <action text> [--role role]          Check regulated-action gate",
-    "  mock <lead-id> [--integration crm|email|chat]   Create mocked integration receipt",
+    "  mock <lead-id> [--integration crm|email|chat|carrier-style]   Create mocked integration receipt",
     "",
     "Options:",
     "  --json                                         Return JSON"

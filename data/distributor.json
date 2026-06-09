@@ -5,7 +5,7 @@
   "jurisdictions": ["CA", "TX", "NY", "UK-DEMO"],
   "reviewPolicy": {
     "licensedReviewRequired": true,
-    "blockedActions": ["quote", "bind", "recommend", "eligibility-decision", "real-outreach"],
+    "blockedActions": ["quote", "bind", "recommend", "coverage-advice", "eligibility-decision", "real-outreach", "credential-collection"],
     "approvalRoles": ["licensed-producer", "compliance-reviewer"]
   },
   "channels": [
@@ -13,13 +13,13 @@
       "id": "web-chat",
       "label": "Website chat assistant",
       "mode": "chat",
-      "allowedIntents": ["intake", "education", "handoff"]
+      "allowedIntents": ["intake", "consent-check", "handoff"]
     },
     {
       "id": "email-nurture",
       "label": "Email nurture drafts",
       "mode": "email",
-      "allowedIntents": ["education", "appointment-setting"]
+      "allowedIntents": ["appointment-setting", "status-reminder"]
     },
     {
       "id": "partner-portal",
@@ -31,7 +31,13 @@
       "id": "agent-assist",
       "label": "Licensed agent assist",
       "mode": "internal",
-      "allowedIntents": ["summary", "task-routing", "compliance-review"]
+      "allowedIntents": ["summary", "task-routing", "script-qa", "compliance-review"]
+    },
+    {
+      "id": "carrier-style-sandbox",
+      "label": "Carrier-style sandbox queue",
+      "mode": "carrier-style",
+      "allowedIntents": ["handoff-summary", "status-mirror", "document-request-placeholder"]
     }
   ],
   "roles": [

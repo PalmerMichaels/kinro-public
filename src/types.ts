@@ -1,4 +1,4 @@
-export type ChannelMode = "chat" | "email" | "portal" | "internal";
+export type ChannelMode = "chat" | "email" | "portal" | "internal" | "carrier-style";
 export type LeadStage = "new" | "qualified" | "review" | "handoff" | "closed";
 export type Priority = "low" | "medium" | "high";
 export type RoleId = "sales-ops" | "licensed-producer" | "compliance-reviewer";
@@ -48,7 +48,7 @@ export interface Lead {
   consent: "demo-consent-only";
 }
 
-export interface Objection {
+export interface ScriptPrompt {
   id: string;
   signals: string[];
   safeResponse: string;
@@ -58,7 +58,7 @@ export interface Objection {
 export interface SeedData {
   distributor: DistributorProfile;
   leads: Lead[];
-  objections: Objection[];
+  scriptPrompts: ScriptPrompt[];
 }
 
 export interface OnboardingSummary {
@@ -98,11 +98,21 @@ export interface CampaignPlan {
   disclaimer: string;
 }
 
-export interface ScriptResponse {
-  objectionId: string;
+export interface IntakeChecklist {
+  leadId: string;
+  accountName: string;
+  checklistItems: string[];
+  missingFields: string[];
+  decisionBoundary: string;
+  disclaimer: string;
+}
+
+export interface ScriptQaResult {
+  promptId: string;
   response: string;
   requiredReview: RoleId;
   allowedForRole: boolean;
+  bannedTermHits: string[];
   disclaimer: string;
 }
 
@@ -116,7 +126,7 @@ export interface ComplianceCheck {
 
 export interface MockReceipt {
   id: string;
-  integration: "crm" | "email" | "chat";
+  integration: "crm" | "email" | "chat" | "carrier-style";
   status: "mocked-not-sent";
   leadId: string;
   message: string;

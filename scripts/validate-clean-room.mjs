@@ -6,7 +6,7 @@ const requiredPhrases = [
   "synthetic",
   "mocked",
   "not an insurance product",
-  "does not provide insurance advice, quoting, underwriting, binding, brokerage, eligibility decisions",
+  "does not provide insurance advice, quote tools, quoting, underwriting, binding, brokerage, eligibility decisions",
   "licensed-professional"
 ];
 
@@ -18,7 +18,7 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-const seedText = ["data/distributor.json", "data/leads.json", "data/objections.json"]
+const seedText = ["data/distributor.json", "data/leads.json", "data/script-prompts.json"]
   .map((file) => readFileSync(file, "utf8"))
   .join("\n")
   .toLowerCase();

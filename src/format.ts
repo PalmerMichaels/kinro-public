@@ -1,4 +1,4 @@
-import type { CampaignPlan, ComplianceCheck, LeadWorkspace, MockReceipt, OnboardingSummary, ScriptResponse } from "./types.js";
+import type { CampaignPlan, ComplianceCheck, IntakeChecklist, LeadWorkspace, MockReceipt, OnboardingSummary, ScriptQaResult } from "./types.js";
 
 export function formatOnboarding(summary: OnboardingSummary): string {
   return [
@@ -51,13 +51,28 @@ export function formatCampaign(plan: CampaignPlan): string {
   return lines.join("\n");
 }
 
-export function formatScript(response: ScriptResponse): string {
+export function formatIntake(checklist: IntakeChecklist): string {
+  return [
+    checklist.disclaimer,
+    "",
+    `Eligibility-safe intake checklist: ${checklist.accountName} (${checklist.leadId})`,
+    `Decision boundary: ${checklist.decisionBoundary}`,
+    "",
+    "Checklist items:",
+    ...checklist.checklistItems.map((item) => `- ${item}`),
+    "",
+    `Missing fields: ${checklist.missingFields.join(", ") || "none"}`
+  ].join("\n");
+}
+
+export function formatScript(response: ScriptQaResult): string {
   return [
     response.disclaimer,
     "",
-    `Objection: ${response.objectionId}`,
+    `Script QA prompt: ${response.promptId}`,
     `Required review: ${response.requiredReview}`,
     `Allowed for selected role: ${response.allowedForRole ? "yes" : "no"}`,
+    `Banned term hits: ${response.bannedTermHits.join(", ") || "none"}`,
     "",
     response.response
   ].join("\n");
